@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍵 Chai Ki Chuski - Full JS Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍵 Chai Ki Chuski - Web Dashboard</h1>
+        <p>Full Frontend Simulation (HTML/CSS/JS/LocalStorage)</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="#" data-page="menu" class="nav-button active">🍵 Menu</a>
+            <a href="#" data-page="orders" class="nav-button">🛒 Orders</a>
+            <a href="#" data-page="stock" class="nav-button">📦 Stock</a>
+            <a href="#" data-page="revenue" class="nav-button">💰 Revenue</a>
+        </div>
+
+        <div class="content">
+
+            <section id="menu" class="page-content active">
+                <h2>🍵 Menu & Ordering</h2>
+                <div id="menu-container"></div>
+                
+                <hr style="margin: 30px 0;">
+
+                <h3>🛒 New Order Cart</h3>
+                <div class="customer-info-box">
+                    <h4>Customer Details</h4>
+                    <input type="text" id="customer-name" placeholder="Name *" required>
+                    <input type="text" id="customer-phone" placeholder="Phone *" required>
+                    <input type="email" id="customer-email" placeholder="Email">
+                </div>
+                
+                <div id="cart-items"></div>
+                <div class="cart-summary">
+                    <strong>Total: <span id="cart-total">₹0.00</span></strong>
+                </div>
+                <button id="confirm-order-button" class="action-button primary">✅ Confirm & Save Order</button>
+            </section>
+
+            <section id="orders" class="page-content">
+                <h2>🛒 Manage Orders</h2>
+                <div id="orders-table-container"></div>
+                <div class="action-group">
+                    <button id="mark-complete-button" class="action-button success">✔ Mark Selected Complete</button>
+                    <button id="generate-bill-button" class="action-button secondary">🧾 Generate Bill</button>
+                </div>
+            </section>
+            
+            <section id="stock" class="page-content">
+                <h2>📦 Stock Management</h2>
+                <div id="stock-table-container"></div>
+                <div class="action-group">
+                    <button id="update-stock-button" class="action-button primary">🔄 Update Selected Stock</button>
+                    <button id="add-menu-item-button" class="action-button secondary">➕ Add New Menu Item</button>
+                </div>
+            </section>
+
+            <section id="revenue" class="page-content">
+                <h2>💰 Revenue Tracker</h2>
+                <div class="filter-group" id="revenue-filters">
+                    <button data-period="today">Today</button>
+                    <button data-period="yesterday">Yesterday</button>
+                    <button data-period="week">This Week</button>
+                    <button data-period="month">This Month</button>
+                    <button data-period="year">This Year</button>
+                    <button data-period="all" class="active">All Time</button>
+                </div>
+                <div id="revenue-stats"></div>
+                <h3 style="margin-top: 20px;">Daily Breakdown</h3>
+                <div id="revenue-table-container"></div>
+            </section>
+
+        </div>
+    </div>
+
+    <div id="modal-stock" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h4>Update Stock for <span id="modal-stock-name"></span></h4>
+            <input type="number" id="modal-stock-increase" placeholder="Quantity to add">
+            <button id="modal-stock-save" class="action-button primary">Save</button>
+        </div>
+    </div>
+    
+    <div id="modal-add-item" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h4>Add New Menu Item</h4>
+            <input type="text" id="add-item-name" placeholder="Item Name">
+            <select id="add-item-category">
+                <option value="Chai">Chai</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Drinks">Drinks</option>
+                <option value="Food">Food</option>
+            </select>
+            <input type="number" id="add-item-price" placeholder="Price (₹)">
+            <input type="number" id="add-item-stock" placeholder="Initial Stock">
+            <button id="modal-add-item-save" class="action-button primary">Add Item</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
