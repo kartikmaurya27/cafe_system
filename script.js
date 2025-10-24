@@ -320,6 +320,9 @@ document.getElementById('generate-bill-button').addEventListener('click', () => 
         Items: ${order.items.replace(/, /g, '\n       ')}
         ---------------------------
         TOTAL: ₹${order.total.toFixed(2)}
+        ---------------------------
+                Thankyou
+               Visit again
     `;
     
     // Using a simple alert for bill generation, as a proper print function requires more libraries.
@@ -664,3 +667,4 @@ document.getElementById('generate-bill-button').addEventListener('click', () => 
         alert("Could not open a new window. Please allow popups for this site to print the bill.");
     }
 });
+
