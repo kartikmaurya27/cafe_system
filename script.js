@@ -543,4 +543,124 @@ function renderRevenue(period) {
         `;
         tbody.appendChild(row);
     });
+
 }
+
+
+// bill genrate in pdf 
+document.getElementById('generate-bill-button').addEventListener('click', () => {
+    const selectedOrders = Array.from(document.querySelectorAll('.order-select:checked'))
+        .map(cb => parseInt(cb.getAttribute('data-id')));
+        
+    if (selectedOrders.length !== 1) {
+        alert("Select exactly one order to generate a bill.");
+        return;
+    }
+    
+    const order = orders.find(o => o.id === selectedOrders[0]);
+    const customer = customers.find(c => c.id === order.customer_id);
+
+    // Split items for a cleaner, itemized look
+    const itemsArray = order.items.split(', ').map(itemStr => {
+        // e.g., "Masala Chai x1"
+        const parts = itemStr.split(' x');
+        const name = parts[0];
+        const qty = parseInt(parts[1] || 1);
+        const itemDetails = menu.find(i => i.item_name === name);
+        const price = itemDetails ? itemDetails.price : 0;
+        return { name, qty, price, total: price * qty };
+    });
+
+    // Generate HTML for the printable bill
+    let itemsHtml = itemsArray.map(item => `
+        <tr style="border-top: 1px solid #ccc;">
+            <td style="text-align: left;">${item.name}</td>
+            <td>${item.price.toFixed(2)}</td>
+            <td>${item.qty}</td>
+            <td style="text-align: right;">${item.total.toFixed(2)}</td>
+        </tr>
+    `).join('');
+
+
+    const billHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Bill #${order.id}</title>
+            <style>
+                body { font-family: 'Courier New', monospace; margin: 0; padding: 20px; color: #333; }
+                .bill-container { width: 300px; margin: 0 auto; border: 1px dashed #333; padding: 10px; }
+                h1 { text-align: center; font-size: 1.2em; margin-bottom: 5px; }
+                .line { border-bottom: 1px solid #333; margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.9em; }
+                th, td { padding: 3px 0; text-align: center; }
+                .total-row { font-weight: bold; font-size: 1.1em; }
+                @media print {
+                    /* Ensure only the content is printed and no headers/footers */
+                    @page { margin: 0.5cm; }
+                    body { margin: 0; }
+                    .bill-container { border: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="bill-container">
+                <h1>CHAI KI CHUSKI</h1>
+                <p style="text-align: center; margin-top: 0;">A Warm Cuppa for a Warm Heart</p>
+                <div class="line"></div>
+                <p>Name: ${customer.name}</p>
+                <p>phone.no: ${customer.phone}</p>
+                <p>Email: ${customer.email}</p>
+                <p>Order ID: ${order.id}</p>
+                <p>Date: ${order.order_date}</p>
+                <div class="line"></div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Item</th>
+                            <th>Rate</th>
+                            <th>Qty</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                <div class="line"></div>
+
+                <table style="font-size: 1em;">
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: left; padding: 5px 0;">TOTAL:</td>
+                        <td style="text-align: right;">₹${order.total.toFixed(2)}</td>
+                    </tr>
+                </table>
+
+                <div class="line"></div>
+                <p style="text-align: center; font-size: 0.8em;">Thank you </p>
+                <p style="text-align: center; font-size: 0.8em;">Visit again</p>
+            </div>
+            <script>
+                // Use a short delay to ensure all content is rendered before printing
+                window.onload = function() {
+                    setTimeout(() => {
+                        window.print();
+                        // Close the window after printing, or let the user close it
+                        // window.close(); 
+                    }, 200);
+                }
+            </script>
+        </body>
+        </html>
+    `;
+    
+    // Open a new window and write the bill HTML
+    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    if (printWindow) {
+        printWindow.document.write(billHtml);
+        printWindow.document.close(); // Important for some browsers
+    } else {
+        alert("Could not open a new window. Please allow popups for this site to print the bill.");
+    }
+});
